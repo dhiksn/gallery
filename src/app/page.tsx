@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Image as ImageIcon, LockKey, PlayCircle } from "@phosphor-icons/react";
+import { authFetch } from "@/lib/auth";
 
 interface ImageItem {
   _id: string;
@@ -25,13 +26,12 @@ export default function Home() {
   const [selectedImage, setSelectedImage] = useState<any>(null);
 
   useEffect(() => {
-    // Fetch current user for comment ownership check
-    fetch("/api/auth/me")
+    authFetch("/api/auth/me")
       .then((res) => res.json())
       .then((data) => data.success && setCurrentUser(data.user))
       .catch(() => {});
 
-    fetch("/api/images")
+    authFetch("/api/images")
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {

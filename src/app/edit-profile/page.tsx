@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { UserCircle, FloppyDisk, Camera, WarningCircle } from "@phosphor-icons/react";
 import Link from "next/link";
 import { motion } from "motion/react";
+import { authFetch } from "@/lib/auth";
 
 export default function EditProfile() {
   const router = useRouter();
@@ -23,7 +24,7 @@ export default function EditProfile() {
   const [picPreview, setPicPreview] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/auth/me")
+    authFetch("/api/auth/me")
       .then((res) => res.json())
       .then((data) => {
         if (!data.success) {
@@ -65,7 +66,7 @@ export default function EditProfile() {
     }
 
     try {
-      const res = await fetch("/api/profile", {
+      const res = await authFetch("/api/profile", {
         method: "PUT",
         body: data,
       });

@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { X, DownloadSimple, PaperPlaneRight, Trash, UserCircle } from "@phosphor-icons/react";
+import { authFetch, getToken } from "@/lib/auth";
 
 interface Comment {
   _id: string;
@@ -27,7 +28,10 @@ export function ImageModal({ image, currentUser, onClose }: ImageModalProps) {
   useEffect(() => {
     if (image) {
       setLoadingComments(true);
-      fetch(`/api/comments?image_id=${image._id}`)
+      const token = getToken();
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+      fetch(`/api/comments?image_id=${image._id}`, { headers })
         .then((res) => res.json())
         .then((data) => {
           if (data.success) setComments(data.comments);
@@ -54,7 +58,7 @@ export function ImageModal({ image, currentUser, onClose }: ImageModalProps) {
     e.preventDefault();
     if (!newComment.trim()) return;
     try {
-      const res = await fetch("/api/comments", {
+      const res = await authFetch("/api/comments", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ image_id: image._id, comment_text: newComment }),
@@ -62,7 +66,10 @@ export function ImageModal({ image, currentUser, onClose }: ImageModalProps) {
       const data = await res.json();
       if (data.success) {
         setNewComment("");
-        fetch(`/api/comments?image_id=${image._id}`)
+        const token = getToken();
+        const headers: Record<string, string> = {};
+        if (token) headers["Authorization"] = `Bearer ${token}`;
+        fetch(`/api/comments?image_id=${image._id}`, { headers })
           .then((r) => r.json())
           .then((d) => d.success && setComments(d.comments));
       }
@@ -73,7 +80,7 @@ export function ImageModal({ image, currentUser, onClose }: ImageModalProps) {
 
   const handleDeleteComment = async (commentId: string) => {
     try {
-      const res = await fetch(`/api/comments/${commentId}`, { method: "DELETE" });
+      const res = await authFetch(`/api/comments/${commentId}`, { method: "DELETE" });
       const data = await res.json();
       if (data.success) {
         setComments((prev) => prev.filter((c) => c._id !== commentId));

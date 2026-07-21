@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { CloudArrowUp, Globe, LockKey, ArrowLeft, Image as ImageIcon, X } from "@phosphor-icons/react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
+import { authFetch } from "@/lib/auth";
 
 export default function UploadPage() {
   const router = useRouter();
@@ -21,7 +22,7 @@ export default function UploadPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    fetch("/api/auth/me")
+    authFetch("/api/auth/me")
       .then((res) => res.json())
       .then((data) => {
         if (!data.success) {
@@ -73,7 +74,7 @@ export default function UploadPage() {
     files.forEach(file => formData.append("images", file));
 
     try {
-      const res = await fetch("/api/images/upload", {
+      const res = await authFetch("/api/images/upload", {
         method: "POST",
         body: formData,
       });

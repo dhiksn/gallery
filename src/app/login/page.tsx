@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Image as ImageIcon, ArrowRight } from "@phosphor-icons/react";
+import { setToken } from "@/lib/auth";
 
 export default function Login() {
   const [username, setUsername] = useState("");
@@ -24,6 +24,7 @@ export default function Login() {
       const data = await res.json();
       
       if (data.success) {
+        setToken(data.token);
         window.location.href = "/";
       } else {
         setError(data.error || "Login failed");

@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { MagnifyingGlass, Image as ImageIcon, SignOut, UploadSimple, User, GearSix } from "@phosphor-icons/react";
+import { authFetch, removeToken } from "@/lib/auth";
 
 export function Navbar() {
   const [user, setUser] = useState<any>(null);
@@ -13,7 +14,7 @@ export function Navbar() {
   const pathname = usePathname();
 
   useEffect(() => {
-    fetch("/api/auth/me")
+    authFetch("/api/auth/me")
       .then((res) => res.json())
       .then((data) => {
         if (data.user) setUser(data.user);
@@ -35,7 +36,8 @@ export function Navbar() {
   }, []);
 
   const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
+    await authFetch("/api/auth/logout", { method: "POST" });
+    removeToken();
     setUser(null);
     window.location.href = "/";
   };

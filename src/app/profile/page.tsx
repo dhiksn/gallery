@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { PencilSimple, Image as ImageIcon, LockKey, Trash, WarningCircle, X, PlayCircle } from "@phosphor-icons/react";
+import { authFetch } from "@/lib/auth";
 
 interface ProfileData {
   user: {
@@ -18,7 +19,7 @@ interface ProfileData {
   image_count: number;
 }
 
-import { ImageModal } from "@/components/ImageModal";
+import { authFetch } from "@/lib/auth";
 
 export default function Profile() {
   const [data, setData] = useState<ProfileData | null>(null);
@@ -37,7 +38,7 @@ export default function Profile() {
   }, []);
 
   const loadProfile = () => {
-    fetch("/api/profile")
+    authFetch("/api/profile")
       .then((res) => res.json())
       .then((resData) => {
         if (resData.success) {
@@ -63,7 +64,7 @@ export default function Profile() {
     if (!deleteTarget) return;
     setDeleting(true);
     try {
-      const res = await fetch(`/api/images/${deleteTarget.id}`, { method: "DELETE" });
+      const res = await authFetch(`/api/images/${deleteTarget.id}`, { method: "DELETE" });
       const resData = await res.json();
       if (resData.success) {
         setDeleteTarget(null);

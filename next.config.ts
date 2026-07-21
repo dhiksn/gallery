@@ -12,11 +12,11 @@ const nextConfig: NextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "http://localhost:3000/api/:path*",
+        destination: "http://node1.gervhosting.my.id:5457/api/:path*",
       },
       {
         source: "/uploads/:path*",
-        destination: "http://localhost:3000/uploads/:path*",
+        destination: "http://node1.gervhosting.my.id:5457/uploads/:path*",
       },
     ];
   },

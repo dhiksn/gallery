@@ -5,6 +5,7 @@ import Link from "next/link";
 import { Image as ImageIcon, ArrowRight } from "@phosphor-icons/react";
 
 export default function Register() {
+  const [fullName, setFullName] = useState("");
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -20,7 +21,7 @@ export default function Register() {
       const res = await fetch("/api/auth/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ username, email, password }),
+        body: JSON.stringify({ full_name: fullName, username, email, password }),
       });
       const data = await res.json();
       
@@ -69,6 +70,18 @@ export default function Register() {
             </p>
 
             <form onSubmit={handleSubmit} className="flex flex-col gap-5">
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-zinc-300">Full Name</label>
+                <input
+                  type="text"
+                  required
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  className="w-full rounded-xl border border-zinc-800 bg-zinc-950/50 px-4 py-3 text-sm text-zinc-100 placeholder:text-zinc-600 focus:border-zinc-700 focus:outline-none focus:ring-1 focus:ring-zinc-700 transition-all"
+                  placeholder="John Doe"
+                />
+              </div>
+
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-medium text-zinc-300">Username</label>
                 <input

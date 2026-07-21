@@ -5,6 +5,7 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "motion/react";
 import { PencilSimple, Image as ImageIcon, LockKey, Trash, WarningCircle, X, PlayCircle } from "@phosphor-icons/react";
 import { authFetch } from "@/lib/auth";
+import { ImageModal } from "@/components/ImageModal";
 
 interface ProfileData {
   user: {
@@ -18,8 +19,6 @@ interface ProfileData {
   images: any[];
   image_count: number;
 }
-
-import { authFetch } from "@/lib/auth";
 
 export default function Profile() {
   const [data, setData] = useState<ProfileData | null>(null);

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Image as ImageIcon, LockKey, PlayCircle } from "@phosphor-icons/react";
 import { authFetch } from "@/lib/auth";
+import { ImageModal } from "@/components/ImageModal";
 
 interface ImageItem {
   _id: string;
@@ -16,8 +17,6 @@ interface ImageItem {
   privacy: "public" | "private";
   media_type?: "image" | "video";
 }
-
-import { ImageModal } from "@/components/ImageModal";
 
 export default function Home() {
   const [images, setImages] = useState<ImageItem[]>([]);

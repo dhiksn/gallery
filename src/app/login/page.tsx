@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import { Image as ImageIcon, ArrowRight } from "@phosphor-icons/react";
 import { setToken } from "@/lib/auth";
 
 export default function Login() {

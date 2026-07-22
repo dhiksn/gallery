@@ -83,7 +83,7 @@ export function Navbar() {
               <div className="relative pl-4 border-l border-zinc-800/50" ref={dropdownRef}>
                 <button
                   onClick={() => setDropdownOpen((v) => !v)}
-                  className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 transition-colors overflow-hidden"
+                  className="relative flex h-8 w-8 shrink-0 items-center justify-center overflow-hidden rounded-full bg-emerald-500/10 text-emerald-500 transition-colors hover:bg-emerald-500/20"
                 >
                   {user.profile_picture ? (
                     <Image
@@ -110,10 +110,6 @@ export function Navbar() {
                       <Link href="/profile" onClick={() => setDropdownOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-zinc-50 transition-colors">
                         <User weight="bold" className="text-base" />
                         My Profile
-                      </Link>
-                      <Link href="/edit-profile" onClick={() => setDropdownOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-zinc-50 transition-colors">
-                        <GearSix weight="bold" className="text-base" />
-                        Edit Profile
                       </Link>
                       <Link href="/settings" onClick={() => setDropdownOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-zinc-50 transition-colors">
                         <GearSix weight="bold" className="text-base" />

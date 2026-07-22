@@ -116,7 +116,7 @@ export default function SettingsPage() {
 
   return (
     <div className="mx-auto mt-12 mb-24 max-w-[1100px]">
-      <div className="mb-8 flex items-start justify-between gap-6">
+      <div className="mb-8">
         <div>
           <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-zinc-800 bg-zinc-900/70 px-4 py-2 text-xs uppercase tracking-[0.18em] text-zinc-400">
             <GearSix weight="bold" />
@@ -126,11 +126,6 @@ export default function SettingsPage() {
           <p className="mt-2 text-sm text-zinc-400">
             Kelola keamanan akun dan tindakan sensitif untuk profil {user?.username}.
           </p>
-        </div>
-
-        <div className="min-w-[220px] rounded-3xl border border-zinc-800 bg-zinc-900/70 p-5 text-sm text-zinc-400">
-          <p className="text-zinc-100">{user?.username}</p>
-          <p className="mt-1 truncate text-xs text-zinc-500">{user?.email}</p>
         </div>
       </div>
 

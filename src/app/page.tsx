@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { Image as ImageIcon, LockKey, PlayCircle } from "@phosphor-icons/react";
 import { authFetch } from "@/lib/auth";
@@ -18,11 +19,18 @@ interface ImageItem {
   media_type?: "image" | "video";
 }
 
+interface CurrentUser {
+  _id: string;
+  username: string;
+  email: string;
+  profile_picture?: string | null;
+}
+
 export default function Home() {
   const [images, setImages] = useState<ImageItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState<any>(null);
-  const [selectedImage, setSelectedImage] = useState<any>(null);
+  const [currentUser, setCurrentUser] = useState<CurrentUser | null>(null);
+  const [selectedImage, setSelectedImage] = useState<ImageItem | null>(null);
 
   useEffect(() => {
     authFetch("/api/auth/me")
@@ -79,12 +87,15 @@ export default function Home() {
                   preload="metadata"
                 />
               ) : (
-                <img
-                  src={img.image_path}
-                  alt={img.title}
-                  className="w-full object-cover"
-                  loading="lazy"
-                />
+                <>
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={img.image_path}
+                    alt={img.title}
+                    className="w-full object-cover"
+                    loading="lazy"
+                  />
+                </>
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-zinc-950/90 via-zinc-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
               
@@ -109,7 +120,13 @@ export default function Home() {
                 <div className="flex items-center gap-2 mt-3">
                   <div className="h-6 w-6 rounded-full overflow-hidden bg-zinc-800">
                     {img.profile_picture ? (
-                      <img src={`/uploads/profiles/${img.profile_picture.split(/[\\/]/).pop()}`} className="w-full h-full object-cover" />
+                      <Image
+                        src={`/uploads/profiles/${img.profile_picture.split(/[\\/]/).pop()}`}
+                        alt={`${img.username} avatar`}
+                        width={24}
+                        height={24}
+                        className="h-full w-full object-cover"
+                      />
                     ) : (
                       <div className="w-full h-full flex items-center justify-center text-[10px] font-bold text-zinc-400">
                         {img.username.charAt(0).toUpperCase()}

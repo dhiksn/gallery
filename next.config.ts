@@ -1,13 +1,15 @@
 import type { NextConfig } from "next";
 
+const experimentalConfig: NonNullable<NextConfig["experimental"]> = {
+  serverActions: {
+    bodySizeLimit: "100mb",
+  },
+  proxyClientMaxBodySize: "100mb",
+};
+
 const nextConfig: NextConfig = {
-  allowedDevOrigins: ['192.168.110.250'],
-  experimental: {
-    serverActions: {
-      bodySizeLimit: "100mb",
-    },
-    proxyClientMaxBodySize: "100mb",
-  } as any,
+  allowedDevOrigins: ["192.168.110.250"],
+  experimental: experimentalConfig,
   async rewrites() {
     return [
       {

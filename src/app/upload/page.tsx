@@ -2,8 +2,7 @@
 
 import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { CloudArrowUp, Globe, LockKey, ArrowLeft, Image as ImageIcon, X } from "@phosphor-icons/react";
-import Link from "next/link";
+import { CloudArrowUp, Globe, LockKey, Image as ImageIcon, X } from "@phosphor-icons/react";
 import { motion, AnimatePresence } from "motion/react";
 import { authFetch } from "@/lib/auth";
 
@@ -85,7 +84,7 @@ export default function UploadPage() {
       } else {
         setError(data.errors?.join(", ") || data.error || "Upload failed");
       }
-    } catch (err) {
+    } catch {
       setError("Network error occurred");
     } finally {
       setLoading(false);
@@ -158,7 +157,10 @@ export default function UploadPage() {
                         {files[idx]?.type.startsWith("video/") ? (
                           <video src={preview} className="w-full h-auto object-cover" muted playsInline />
                         ) : (
-                          <img src={preview} alt="Preview" className="w-full h-auto object-cover" />
+                          <>
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img src={preview} alt="Preview" className="w-full h-auto object-cover" />
+                          </>
                         )}
                         <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-[2px]" />
                         <button

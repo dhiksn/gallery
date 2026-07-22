@@ -1,9 +1,10 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { X, DownloadSimple, PaperPlaneRight, Trash, UserCircle } from "@phosphor-icons/react";
-import { authFetch, getToken } from "@/lib/auth";
+import { authFetch } from "@/lib/auth";
 
 interface Comment {
   _id: string;
@@ -14,9 +15,23 @@ interface Comment {
   created_at: string;
 }
 
+interface ModalImage {
+  _id: string;
+  title: string;
+  description?: string;
+  image_path: string;
+  username: string;
+  profile_picture?: string;
+  media_type?: "image" | "video";
+}
+
+interface CurrentUser {
+  _id: string;
+}
+
 interface ImageModalProps {
-  image: any | null;
-  currentUser: any | null;
+  image: ModalImage | null;
+  currentUser: CurrentUser | null;
   onClose: () => void;
 }
 
@@ -26,21 +41,39 @@ export function ImageModal({ image, currentUser, onClose }: ImageModalProps) {
   const [loadingComments, setLoadingComments] = useState(false);
 
   useEffect(() => {
-    if (image) {
+    let cancelled = false;
+
+    async function loadComments() {
+      if (!image) {
+        if (!cancelled) {
+          setComments([]);
+          setNewComment("");
+          setLoadingComments(false);
+        }
+        return;
+      }
+
       setLoadingComments(true);
-      const token = getToken();
-      const headers: Record<string, string> = {};
-      if (token) headers["Authorization"] = `Bearer ${token}`;
-      fetch(`/api/comments?image_id=${image._id}`, { headers })
-        .then((res) => res.json())
-        .then((data) => {
-          if (data.success) setComments(data.comments);
-        })
-        .finally(() => setLoadingComments(false));
-    } else {
-      setComments([]);
-      setNewComment("");
+
+      try {
+        const res = await authFetch(`/api/comments?image_id=${image._id}`);
+        const data = await res.json();
+
+        if (!cancelled && data.success) {
+          setComments(data.comments);
+        }
+      } finally {
+        if (!cancelled) {
+          setLoadingComments(false);
+        }
+      }
     }
+
+    void loadComments();
+
+    return () => {
+      cancelled = true;
+    };
   }, [image]);
 
   // Close on Escape — close image modal
@@ -66,10 +99,7 @@ export function ImageModal({ image, currentUser, onClose }: ImageModalProps) {
       const data = await res.json();
       if (data.success) {
         setNewComment("");
-        const token = getToken();
-        const headers: Record<string, string> = {};
-        if (token) headers["Authorization"] = `Bearer ${token}`;
-        fetch(`/api/comments?image_id=${image._id}`, { headers })
+        authFetch(`/api/comments?image_id=${image._id}`)
           .then((r) => r.json())
           .then((d) => d.success && setComments(d.comments));
       }
@@ -119,10 +149,13 @@ export function ImageModal({ image, currentUser, onClose }: ImageModalProps) {
                   onClick={(e) => e.stopPropagation()}
                 />
               ) : (
-                <img
+                <Image
                   src={image.image_path}
                   alt={image.title}
+                  width={1200}
+                  height={900}
                   className="w-full h-full object-contain max-h-[90vh]"
+                  unoptimized
                 />
               )}
               <button
@@ -139,7 +172,13 @@ export function ImageModal({ image, currentUser, onClose }: ImageModalProps) {
                 <div className="flex items-center gap-3">
                   <div className="h-10 w-10 rounded-full bg-zinc-800 overflow-hidden border border-zinc-700">
                     {image.profile_picture ? (
-                      <img src={`/uploads/profiles/${image.profile_picture.split(/[\\/]/).pop()}`} className="h-full w-full object-cover" />
+                      <Image
+                        src={`/uploads/profiles/${image.profile_picture.split(/[\\/]/).pop()}`}
+                        alt={`${image.username} avatar`}
+                        width={40}
+                        height={40}
+                        className="h-full w-full object-cover"
+                      />
                     ) : (
                       <UserCircle weight="duotone" className="h-full w-full text-zinc-500" />
                     )}
@@ -191,7 +230,13 @@ export function ImageModal({ image, currentUser, onClose }: ImageModalProps) {
                     <div key={comment._id} className="flex gap-3 group">
                       <div className="h-8 w-8 shrink-0 rounded-full bg-zinc-800 overflow-hidden">
                         {comment.profile_picture ? (
-                          <img src={`/uploads/profiles/${comment.profile_picture.split(/[\\/]/).pop()}`} className="h-full w-full object-cover" />
+                          <Image
+                            src={`/uploads/profiles/${comment.profile_picture.split(/[\\/]/).pop()}`}
+                            alt={`${comment.username} avatar`}
+                            width={32}
+                            height={32}
+                            className="h-full w-full object-cover"
+                          />
                         ) : (
                           <div className="flex h-full w-full items-center justify-center text-xs font-medium text-zinc-400">
                             {comment.username.charAt(0).toUpperCase()}

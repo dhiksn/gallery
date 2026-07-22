@@ -2,10 +2,20 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { motion, AnimatePresence } from "motion/react";
 import { PencilSimple, Image as ImageIcon, LockKey, Trash, WarningCircle, X, PlayCircle } from "@phosphor-icons/react";
 import { authFetch } from "@/lib/auth";
 import { ImageModal } from "@/components/ImageModal";
+
+interface ProfileImage {
+  _id: string;
+  title: string;
+  description?: string;
+  image_path: string;
+  privacy: "public" | "private";
+  media_type?: "image" | "video";
+}
 
 interface ProfileData {
   user: {
@@ -16,14 +26,14 @@ interface ProfileData {
     bio?: string;
     profile_picture?: string;
   };
-  images: any[];
+  images: ProfileImage[];
   image_count: number;
 }
 
 export default function Profile() {
   const [data, setData] = useState<ProfileData | null>(null);
   const [loading, setLoading] = useState(true);
-  const [selectedImage, setSelectedImage] = useState<any>(null);
+  const [selectedImage, setSelectedImage] = useState<ProfileImage | null>(null);
   const [deleteTarget, setDeleteTarget] = useState<{ id: string; title: string } | null>(null);
   const [deleting, setDeleting] = useState(false);
 
@@ -92,9 +102,11 @@ export default function Profile() {
       <div className="flex flex-col md:flex-row items-start md:items-center gap-8 mb-16 pb-12 border-b border-zinc-800/50">
         <div className="h-36 w-36 shrink-0 overflow-hidden rounded-full border border-zinc-800 bg-zinc-900">
           {data.user.profile_picture ? (
-            <img
+            <Image
               src={`/uploads/profiles/${data.user.profile_picture.split(/[\\/]/).pop()}`}
               alt="Profile"
+              width={144}
+              height={144}
               className="h-full w-full object-cover"
             />
           ) : (
@@ -144,7 +156,7 @@ export default function Profile() {
         {data.images.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-20 text-zinc-500 rounded-3xl border border-zinc-800/50 border-dashed bg-zinc-900/20">
             <ImageIcon weight="duotone" className="text-5xl mb-4 opacity-50" />
-            <p className="mb-6">You haven't uploaded any images yet.</p>
+            <p className="mb-6">You haven&apos;t uploaded any images yet.</p>
             <Link
               href="/upload"
               className="rounded-full bg-zinc-100 px-5 py-2.5 text-sm font-medium text-zinc-900 hover:bg-zinc-300 transition-colors"
@@ -154,7 +166,7 @@ export default function Profile() {
           </div>
         ) : (
           <div className="columns-1 sm:columns-2 lg:columns-3 xl:columns-4 gap-6 space-y-6">
-            {data.images.map((img: any, i: number) => (
+            {data.images.map((img, i: number) => (
               <motion.div
                 key={img._id}
                 initial={{ opacity: 0, y: 10 }}
@@ -172,12 +184,15 @@ export default function Profile() {
                     preload="metadata"
                   />
                 ) : (
-                  <img
-                    src={img.image_path}
-                    alt={img.title}
-                    className="w-full object-cover"
-                    loading="lazy"
-                  />
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={img.image_path}
+                      alt={img.title}
+                      className="w-full object-cover"
+                      loading="lazy"
+                    />
+                  </>
                 )}
 
                 <div className="absolute inset-0 bg-gradient-to-t from-zinc-950 via-zinc-950/40 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
@@ -222,7 +237,11 @@ export default function Profile() {
       {/* Image view modal */}
       {selectedImage && (
         <ImageModal
-          image={selectedImage}
+          image={{
+            ...selectedImage,
+            username: data.user.username,
+            profile_picture: data.user.profile_picture,
+          }}
           currentUser={data.user}
           onClose={() => setSelectedImage(null)}
         />
@@ -265,7 +284,7 @@ export default function Profile() {
                 {/* Body */}
                 <p className="text-sm text-zinc-400 leading-relaxed">
                   Are you sure you want to delete{" "}
-                  <span className="font-medium text-zinc-200">"{deleteTarget.title}"</span>?
+                  <span className="font-medium text-zinc-200">&quot;{deleteTarget.title}&quot;</span>?
                   This action cannot be undone.
                 </p>
 

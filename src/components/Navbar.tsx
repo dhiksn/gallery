@@ -2,12 +2,19 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { MagnifyingGlass, Image as ImageIcon, SignOut, UploadSimple, User, GearSix } from "@phosphor-icons/react";
 import { authFetch, removeToken } from "@/lib/auth";
 
+type NavbarUser = {
+  username: string;
+  email: string;
+  profile_picture?: string | null;
+};
+
 export function Navbar() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<NavbarUser | null>(null);
   const [loading, setLoading] = useState(true);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -79,7 +86,13 @@ export function Navbar() {
                   className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-500/10 text-emerald-500 hover:bg-emerald-500/20 transition-colors overflow-hidden"
                 >
                   {user.profile_picture ? (
-                    <img src={`/uploads/profiles/${user.profile_picture.split(/[\\/]/).pop()}`} alt="" className="h-full w-full object-cover" />
+                    <Image
+                      src={`/uploads/profiles/${user.profile_picture.split(/[\\/]/).pop()}`}
+                      alt="Profile picture"
+                      fill
+                      sizes="32px"
+                      className="object-cover"
+                    />
                   ) : (
                     <span className="text-sm font-semibold">{user.username.charAt(0).toUpperCase()}</span>
                   )}
@@ -101,6 +114,10 @@ export function Navbar() {
                       <Link href="/edit-profile" onClick={() => setDropdownOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-zinc-50 transition-colors">
                         <GearSix weight="bold" className="text-base" />
                         Edit Profile
+                      </Link>
+                      <Link href="/settings" onClick={() => setDropdownOpen(false)} className="flex items-center gap-3 px-4 py-2.5 text-sm text-zinc-300 hover:bg-zinc-800 hover:text-zinc-50 transition-colors">
+                        <GearSix weight="bold" className="text-base" />
+                        Setting
                       </Link>
                     </div>
                     <div className="border-t border-zinc-800 py-1">

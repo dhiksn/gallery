@@ -30,7 +30,7 @@ export default function Login() {
       } else {
         setError(data.error || "Login failed");
       }
-    } catch (err) {
+    } catch {
       setError("Network error");
     } finally {
       setLoading(false);
@@ -63,7 +63,7 @@ export default function Login() {
           <div className="mx-auto w-full max-w-[340px]">
             <h2 className="mb-2 text-2xl font-medium tracking-tight text-zinc-50">Log in</h2>
             <p className="mb-8 text-sm text-zinc-400">
-              Don't have an account?{" "}
+              Don&apos;t have an account?{" "}
               <Link href="/register" className="text-emerald-400 hover:text-emerald-300 transition-colors">
                 Sign up
               </Link>

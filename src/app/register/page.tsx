@@ -30,7 +30,7 @@ export default function Register() {
       } else {
         setError(data.error || "Registration failed");
       }
-    } catch (err) {
+    } catch {
       setError("Network error");
     } finally {
       setLoading(false);

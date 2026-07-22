@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { UserCircle, FloppyDisk, Camera, WarningCircle } from "@phosphor-icons/react";
-import Link from "next/link";
 import { motion } from "motion/react";
 import { authFetch } from "@/lib/auth";
 
@@ -77,7 +76,7 @@ export default function EditProfile() {
       } else {
         setError(resData.error || "Failed to update profile");
       }
-    } catch (err) {
+    } catch {
       setError("Network error occurred");
     } finally {
       setSaving(false);
@@ -112,7 +111,10 @@ export default function EditProfile() {
             <div className="relative group mb-6">
               <div className="h-40 w-40 overflow-hidden rounded-full border-4 border-zinc-950 bg-zinc-950 shadow-2xl">
                 {picPreview ? (
-                  <img src={picPreview} alt="Preview" className="h-full w-full object-cover transition-transform group-hover:scale-105 duration-500" />
+                  <>
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={picPreview} alt="Preview" className="h-full w-full object-cover transition-transform group-hover:scale-105 duration-500" />
+                  </>
                 ) : (
                   <UserCircle weight="duotone" className="h-full w-full text-zinc-700" />
                 )}
